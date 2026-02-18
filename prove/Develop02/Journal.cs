@@ -10,15 +10,33 @@ namespace JournalProgram
         private List<Entry> _entries;
         private List<string> _prompts;
         private Random _random;
-        public int CurrentStreak { get; private set; }
-        public int LongestStreak { get; private set; }
+        private int _currentStreak;
+        private int _longestStreak;
+        private int CompareEntriesByDateDescending(Entry a, Entry b)
+        {
+            DateTime dateA = DateTime.Parse(a.GetDate());
+            DateTime dateB = DateTime.Parse(b.GetDate());
+
+            return dateB.CompareTo(dateA);
+        }
+
+
+        public int GetCurrentStreak()
+        {
+            return _currentStreak;
+        }
+
+        public int GetLongestStreak()
+        {
+            return _longestStreak;
+        }
 
         public Journal()
         {
             _entries = new List<Entry>();
             _random = new Random();
-            CurrentStreak = 0;
-            LongestStreak = 0;
+            _currentStreak = 0;
+            _longestStreak = 0;
             InitializePrompts();
         }
 
@@ -53,19 +71,21 @@ namespace JournalProgram
         {
             if (_entries.Count == 0)
             {
-                CurrentStreak = 0;
+                _currentStreak = 0;
                 return;
             }
 
-            var sortedEntries = _entries.OrderByDescending(e => DateTime.Parse(e.Date)).ToList();
+            _entries.Sort(CompareEntriesByDateDescending);
+            List<Entry> sortedEntries = new List<Entry>(_entries);
+
             
-            CurrentStreak = 0;
+            _currentStreak = 0;
             int tempStreak = 0;
             DateTime? previousDate = null;
 
             foreach (var entry in sortedEntries)
             {
-                DateTime entryDate = DateTime.Parse(entry.Date).Date;
+                DateTime entryDate = DateTime.Parse(entry.GetDate()).Date;
 
                 if (previousDate == null)
                 {
@@ -99,11 +119,11 @@ namespace JournalProgram
                 }
             }
 
-            CurrentStreak = tempStreak;
+            _currentStreak = tempStreak;
 
-            if (CurrentStreak > LongestStreak)
+            if (_currentStreak > _longestStreak)
             {
-                LongestStreak = CurrentStreak;
+                _longestStreak = _currentStreak;
             }
         }
 
@@ -178,26 +198,26 @@ namespace JournalProgram
         public void DisplayStreakInfo()
         {
             Console.WriteLine("════════════════════════════════════");
-            Console.WriteLine($"Current Streak: {CurrentStreak} day(s)");
-            Console.WriteLine($"Longest Streak: {LongestStreak} day(s)");
+            Console.WriteLine($"Current Streak: {_currentStreak} day(s)");
+            Console.WriteLine($"Longest Streak: {_longestStreak} day(s)");
             
-            if (CurrentStreak >= 30)
+            if (_currentStreak >= 30)
             {
                 Console.WriteLine("Amazing! You're on fire! 30+ days!");
             }
-            else if (CurrentStreak >= 14)
+            else if (_currentStreak >= 14)
             {
                 Console.WriteLine("Two weeks strong! Keep it up!");
             }
-            else if (CurrentStreak >= 7)
+            else if (_currentStreak >= 7)
             {
                 Console.WriteLine("One week streak! You're doing great!");
             }
-            else if (CurrentStreak >= 3)
+            else if (_currentStreak >= 3)
             {
                 Console.WriteLine("Nice! Building a habit!");
             }
-            else if (CurrentStreak == 0)
+            else if (_currentStreak == 0)
             {
                 Console.WriteLine("Start your streak today!");
             }

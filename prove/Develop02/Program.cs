@@ -79,15 +79,15 @@ namespace JournalProgram
 
             string date = DateTime.Now.ToShortDateString();
             
-            int previousStreak = journal.CurrentStreak;
+            int previousStreak = journal.GetCurrentStreak();
             Entry newEntry = new Entry(prompt, response, date);
             journal.AddEntry(newEntry);
 
             Console.WriteLine("Entry added successfully!");
             
-            if (journal.CurrentStreak > previousStreak)
+            if (journal.GetCurrentStreak() > previousStreak)
             {
-                Console.WriteLine($"Streak increased to {journal.CurrentStreak} day(s)!");
+                Console.WriteLine($"Streak increased to {journal.GetCurrentStreak()} day(s)!");
             }
             
             Console.WriteLine();

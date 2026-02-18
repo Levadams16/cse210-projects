@@ -4,28 +4,43 @@ namespace JournalProgram
 {
     public class Entry
     {
-        public string Prompt { get; set; }
-        public string Response { get; set; }
-        public string Date { get; set; }
+        private string _prompt;
+        private string _response;
+        private string _date;
 
         public Entry(string prompt, string response, string date)
         {
-            Prompt = prompt;
-            Response = response;
-            Date = date;
+            _prompt = prompt;
+            _response = response;
+            _date = date;
+        }
+
+        public string GetPrompt()
+        {
+            return _prompt;
+        }
+
+        public string GetResponse()
+        {
+            return _response;
+        }
+
+        public string GetDate()
+        {
+            return _date;
         }
 
         public void Display()
         {
-            Console.WriteLine($"Date: {Date}");
-            Console.WriteLine($"Prompt: {Prompt}");
-            Console.WriteLine($"Response: {Response}");
+            Console.WriteLine($"Date: {_date}");
+            Console.WriteLine($"Prompt: {_prompt}");
+            Console.WriteLine($"Response: {_response}");
             Console.WriteLine();
         }
 
         public string ToFileString()
         {
-            return $"{Date}~|~{Prompt}~|~{Response}";
+            return $"{_date}~|~{_prompt}~|~{_response}";
         }
 
         public static Entry FromFileString(string fileString)
