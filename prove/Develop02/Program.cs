@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-
+// I made a streak counter for the journal for the exceeding requirements.
 namespace JournalProgram
 {
     class Program
