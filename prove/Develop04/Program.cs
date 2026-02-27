@@ -1,119 +1,82 @@
 using System;
-using System.IO;
+using System.Collections.Generic;
+using System.Threading;
 
-namespace JournalProgram
+class Program
 {
-    class Program
+    static void Main(string[] args)
     {
-        // I made a streak counter for exceeding requirements
-        static void Main(string[] args)
+        List<string> sessionLog = new List<string>();
+        bool running = true;
+
+        while (running)
         {
-            Journal journal = new Journal();
-            bool running = true;
-
-            Console.WriteLine("Welcome to the Journal Program!");
-            Console.WriteLine();
-
-            string defaultFile = "myjournal.txt";
-            if (File.Exists(defaultFile))
+            try
             {
-                journal.LoadFromFile(defaultFile);
-                Console.WriteLine();
+                Console.Clear();
+            }
+            catch
+            {
+                // Ignore if it doesn't work
+            }
+            Console.WriteLine("Mindfulness Program");
+            Console.WriteLine("-------------------");
+            Console.WriteLine("1. Breathing Activity");
+            Console.WriteLine("2. Reflection Activity");
+            Console.WriteLine("3. Listing Activity");
+            Console.WriteLine("4. Gratitude Activity (Extra)");
+            Console.WriteLine("5. View Session Log");
+            Console.WriteLine("6. Quit");
+            Console.Write("Select an option: ");
+
+            string choice = Console.ReadLine();
+
+            Activity activity = null;
+
+            switch (choice)
+            {
+                case "1":
+                    activity = new BreathingActivity();
+                    break;
+                case "2":
+                    activity = new ReflectionActivity();
+                    break;
+                case "3":
+                    activity = new ListingActivity();
+                    break;
+                case "4":
+                    activity = new GratitudeActivity();
+                    break;
+                case "5":
+                    try
+                    {
+                        Console.Clear();
+                    }
+                    catch
+                    {
+                        // Ignore if it doesn't work
+                    }
+                    Console.WriteLine("Session Log:");
+                    foreach (var log in sessionLog)
+                        Console.WriteLine(log);
+                    Console.WriteLine("\nPress Enter to return...");
+                    Console.ReadLine();
+                    continue;
+                case "6":
+                    running = false;
+                    continue;
             }
 
-            journal.DisplayStreakInfo();
-            Console.WriteLine();
-
-            while (running)
+            if (activity != null)
             {
-                DisplayMenu();
-                string choice = Console.ReadLine();
-
-                switch (choice)
-                {
-                    case "1":
-                        WriteNewEntry(journal);
-                        break;
-                    case "2":
-                        DisplayJournal(journal);
-                        break;
-                    case "3":
-                        SaveJournal(journal);
-                        break;
-                    case "4":
-                        LoadJournal(journal);
-                        break;
-                    case "5":
-                        running = false;
-                        Console.WriteLine("Goodbye! Keep up the journaling!");
-                        break;
-                    default:
-                        Console.WriteLine("Invalid choice. Please try again.");
-                        break;
-                }
-
-                if (running)
-                {
-                    journal.DisplayStreakInfo();
-                    Console.WriteLine();
-                }
+                activity.Run();
+                sessionLog.Add($"{activity.GetName()} completed for {activity.GetDuration()} seconds.");
             }
-        }
-
-        static void DisplayMenu()
-        {
-            Console.WriteLine("Please select one of the following choices:");
-            Console.WriteLine("1. Write a new entry");
-            Console.WriteLine("2. Display the journal");
-            Console.WriteLine("3. Save the journal to a file");
-            Console.WriteLine("4. Load the journal from a file");
-            Console.WriteLine("5. Quit");
-            Console.Write("What would you like to do? ");
-        }
-
-        static void WriteNewEntry(Journal journal)
-        {
-            string prompt = journal.GetRandomPrompt();
-            Console.WriteLine(prompt);
-            Console.Write("> ");
-            string response = Console.ReadLine();
-
-            string date = DateTime.Now.ToShortDateString();
-            
-            int previousStreak = journal.CurrentStreak;
-            Entry newEntry = new Entry(prompt, response, date);
-            journal.AddEntry(newEntry);
-
-            Console.WriteLine("Entry added successfully!");
-            
-            if (journal.CurrentStreak > previousStreak)
-            {
-                Console.WriteLine($"Streak increased to {journal.CurrentStreak} day(s)!");
-            }
-            
-            Console.WriteLine();
-        }
-
-        static void DisplayJournal(Journal journal)
-        {
-            Console.WriteLine();
-            journal.DisplayAll();
-        }
-
-        static void SaveJournal(Journal journal)
-        {
-            Console.Write("What is the filename? ");
-            string filename = Console.ReadLine();
-            journal.SaveToFile(filename);
-            Console.WriteLine();
-        }
-
-        static void LoadJournal(Journal journal)
-        {
-            Console.Write("What is the filename? ");
-            string filename = Console.ReadLine();
-            journal.LoadFromFile(filename);
-            Console.WriteLine();
         }
     }
 }
+
+/*
+EXCEEDING REQUIREMENTS:
+- Added GratitudeActivity
+*/
